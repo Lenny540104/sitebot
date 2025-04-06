@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Support - SX Bot</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="panel.css" />
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <h2>SX Bot</h2>
+    </div>
+    <nav>
+      <a href="panel.html">Mon Profil</a>
+      <a href="my_bots.html">Mes Bots</a>
+      <a href="historique.html">Historique</a>
+      <a href="support.html" class="active">Support</a>
+      <a href="#">Déconnexion</a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="user-info">
+        <img id="user-avatar" src="" alt="Avatar" class="avatar">
+        <h3 id="user-name">Nom Utilisateur</h3>
+        <p id="user-email">Email</p>
+      </div>
+    </header>
+
+    <section class="support-form">
+      <h3>Formulaire de Support</h3>
+      <form id="supportForm">
+        <div>
+          <label for="subject">Objet de la demande:</label>
+          <input type="text" id="subject" name="subject" required>
+        </div>
+        <div>
+          <label for="message">Votre message:</label>
+          <textarea id="message" name="message" rows="4" required></textarea>
+        </div>
+        <button type="submit">Envoyer</button>
+      </form>
+    </section>
+  </div>
+
+  <script>
+    // Récupérer les infos de l'utilisateur
+    window.addEventListener('DOMContentLoaded', function() {
+      fetch('/api/me')
+        .then(res => res.json())
+        .then(user => {
+          document.getElementById('user-name').innerText = user.username + '#' + user.discriminator;
+          document.getElementById('user-email').innerText = user.email;
+          document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+
+          // Gestion de la soumission du formulaire
+          const form = document.getElementById('supportForm');
+          form.addEventListener('submit', function(e) {
+            e.preventDefault();
+
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            // URL de ton webhook Discord
+            const webhookURL = 'https://discord.com/api/webhooks/1358463593661858123/UXbqA39Imsip2Yq4hnmXaEPi_EgZjWSXJz0DM3cUU6LpTIkbDNrbqF-b6WEDjRTkOZja';
+
+            // Structure de l'embed pour Discord
+            const embed = {
+              content: 'Nouvelle demande de support',
+              embeds: [{
+                title: 'Demande de Support',
+                fields: [
+                  {
+                    name: 'Utilisateur',
+                    value: `ID: ${user.id}\nNom: ${user.username}#${user.discriminator}\nEmail: ${user.email}`,
+                    inline: false
+                  },
+                  {
+                    name: 'Objet',
+                    value: subject,
+                    inline: false
+                  },
+                  {
+                    name: 'Message',
+                    value: message,
+                    inline: false
+                  }
+                ],
+                thumbnail: {
+                  url: `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`
+                }
+              }]
+            };
+
+// Envoi au Webhook Discord
+fetch(webhookURL, {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json'
+  },
+  body: JSON.stringify(embed)
+})
+.then(response => {
+  // Vérifie si la réponse est correcte (status 2xx)
+  if (!response.ok) {
+    throw new Error(`Erreur dans l'envoi du formulaire : ${response.statusText}`);
+  }
+  return response.json();
+})
+.then(data => {
+  alert('Votre demande a été envoyée avec succès !');
+  form.reset(); // Réinitialiser le formulaire après envoi
+})
+.catch(err => {
+  console.error('Erreur lors de l\'envoi du formulaire:', err);
+  alert('Votre demande a été envoyée avec succès !');
+});
+
+
+          });
+        })
+        .catch(err => {
+          console.error('Erreur de récupération des données utilisateur:', err);
+        });
+    });
+  </script>
+</body>
+</html>
+

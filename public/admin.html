@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Admin - SX Bot</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="panel.css" />
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <h2>SX Bot</h2>
+    </div>
+    <nav>
+      <a href="panel.html">Mon Profil</a>
+      <a href="my_bots.html">Mes Bots</a>
+      <a href="historique.html">Historique</a>
+      <a href="support.html">Support</a>
+      <a href="logout.html">Déconnexion</a>
+      <a href="admin.html" id="adminButton" style="display: none;">Admin</a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="user-info">
+        <h3>Page d'administration</h3>
+      </div>
+    </header>
+
+    <section class="admin-section">
+      <h3>Gestion des utilisateurs</h3>
+      <div class="search-container">
+        <input type="text" id="searchUser" placeholder="Rechercher un utilisateur..." />
+        <button id="searchBtn">Rechercher</button>
+      </div>
+      <div id="userList"></div>
+
+      <div id="assignBot" style="display: none;">
+        <h4>Attribuer un Bot à l'utilisateur</h4>
+        <form id="assignBotForm">
+          <label for="botSelect">Sélectionner le bot:</label>
+          <select id="botSelect">
+            <option value="bot1">Bot 1</option>
+            <option value="bot2">Bot 2</option>
+            <!-- Ajoute d'autres bots ici -->
+          </select>
+
+          <label for="botDuration">Durée du bot (en jours):</label>
+          <input type="number" id="botDuration" min="1" required />
+
+          <button type="submit">Attribuer le Bot</button>
+        </form>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    let selectedUserId = null;
+
+    // Fonction pour rechercher un utilisateur
+    document.getElementById('searchBtn').addEventListener('click', function() {
+      const username = document.getElementById('searchUser').value;
+      
+      if (!username) return alert("Veuillez entrer un nom d'utilisateur.");
+      
+      fetch(`/api/search-user?username=${username}`)
+        .then(res => res.json())
+        .then(data => {
+          const userList = document.getElementById('userList');
+          userList.innerHTML = ''; // Réinitialise la liste des utilisateurs
+
+          if (data && data.length > 0) {
+            data.forEach(user => {
+              const userDiv = document.createElement('div');
+              userDiv.innerHTML = `<p>${user.username}#${user.discriminator} (ID: ${user.id})</p>`;
+              const assignBtn = document.createElement('button');
+              assignBtn.innerText = 'Attribuer un bot';
+              assignBtn.onclick = () => showAssignForm(user.id, user.username);
+              userDiv.appendChild(assignBtn);
+              userList.appendChild(userDiv);
+            });
+          } else {
+            userList.innerHTML = '<p>Aucun utilisateur trouvé.</p>';
+          }
+        })
+        .catch(err => {
+          console.error("Erreur de recherche utilisateur:", err);
+          alert("Erreur de recherche.");
+        });
+    });
+
+    // Fonction pour afficher le formulaire d'attribution du bot
+    function showAssignForm(userId, username) {
+      selectedUserId = userId;
+      const assignBotSection = document.getElementById('assignBot');
+      assignBotSection.style.display = 'block';
+      document.getElementById('assignBotForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const bot = document.getElementById('botSelect').value;
+        const duration = document.getElementById('botDuration').value;
+
+        if (!duration || duration <= 0) return alert('Veuillez entrer une durée valide.');
+
+        fetch('/api/assign-bot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: selectedUserId, bot, duration })
+        })
+        .then(res => res.json())
+        .then(data => {
+          alert('Bot attribué avec succès.');
+          window.location.reload();
+        })
+        .catch(err => {
+          console.error("Erreur lors de l'attribution du bot:", err);
+          alert("Erreur lors de l'attribution du bot.");
+        });
+      });
+    }
+  </script>
+</body>
+</html>
+

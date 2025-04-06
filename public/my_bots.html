@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Mes Bots - SX Bot</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="panel.css" /> <!-- Style spécifique pour la page des bots -->
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <h2>SX Bot</h2>
+    </div>
+    <nav>
+      <a href="panel.html">Mon Profil</a>
+      <a href="my_bots.html" class="active">Mes Bots</a>
+      <a href="./historique.html">Historique</a>
+      <a href="./support.html">Support</a>
+      <a href="#" id="logout">Déconnexion</a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="user-info">
+        <img id="user-avatar" src="" alt="Avatar" class="avatar">
+        <h3 id="user-name">Nom Utilisateur</h3>
+        <p id="user-email">Email</p>
+      </div>
+    </header>
+
+    <section class="user-bots">
+      <h3>Mes Bots</h3>
+      <div class="bots-list">
+        <!-- Les cartes des bots seront générées ici -->
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Récupération des données des bots
+    window.addEventListener('DOMContentLoaded', function() {
+      fetch('/api/me')  // Endpoint pour récupérer l'utilisateur connecté
+        .then(res => res.json())
+        .then(user => {
+          if (user.error) {
+            // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+            alert('Veuillez vous connecter');
+            window.location.href = '/login.html';
+          } else {
+            // Affichage des informations de l'utilisateur
+            document.getElementById('user-name').innerText = user.username + '#' + user.discriminator;
+            document.getElementById('user-email').innerText = user.email;
+            document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+
+            // Ajout des bots
+            const botsList = document.querySelector('.bots-list');
+            if (user.bots && user.bots.length > 0) {
+              user.bots.forEach(bot => {
+                const botCard = document.createElement('div');
+                botCard.classList.add('bot-card');
+                botCard.innerHTML = `
+                  <h4>${bot.name}</h4>
+                  <p>Status: ${bot.status}</p>
+                  <p>Temps restant: ${bot.timeLeft}</p>
+                  <p>Commandes disponibles: ${bot.commands.join(', ')}</p>
+                  <a href="bot_detail.html?id=${bot.id}" class="btn-details">Voir les détails</a>
+                `;
+                botsList.appendChild(botCard);
+              });
+            } else {
+              botsList.innerHTML = '<p>Aucun bot acheté pour l’instant.</p>';
+            }
+          }
+        })
+        .catch(err => {
+          console.error('Erreur de récupération des bots:', err);
+        });
+
+      // Gestion de la déconnexion
+      document.getElementById('logout').addEventListener('click', function() {
+        fetch('/api/logout', { method: 'POST' })
+          .then(() => {
+            alert('Déconnexion réussie');
+            window.location.href = '/index.html';
+          })
+          .catch(err => {
+            console.error('Erreur lors de la déconnexion:', err);
+          });
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Historique - SX Bot</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="panel.css" />
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <h2>SX Bot</h2>
+    </div>
+    <nav>
+      <a href="panel.html">Mon Profil</a>
+      <a href="my_bots.html">Mes Bots</a>
+      <a href="historique.html" class="active">Historique</a>
+      <a href="./support.html">Support</a>
+      <a href="#" id="logout">Déconnexion</a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="user-info">
+        <img id="user-avatar" src="" alt="Avatar" class="avatar">
+        <h3 id="user-name">Nom Utilisateur</h3>
+        <p id="user-email">Email</p>
+      </div>
+    </header>
+
+    <section class="historique">
+      <h3>Historique des Actions</h3>
+      <div class="historique-list">
+        <!-- L'historique des actions sera généré ici -->
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Récupération des données de l'historique
+    window.addEventListener('DOMContentLoaded', function() {
+      fetch('/api/me')  // Endpoint pour récupérer l'utilisateur connecté
+        .then(res => res.json())
+        .then(user => {
+          if (user.error) {
+            // Si l'utilisateur n'est pas connecté, rediriger vers la page de connexion
+            alert('Veuillez vous connecter');
+            window.location.href = '/login.html';
+          } else {
+            // Affichage des informations de l'utilisateur
+            document.getElementById('user-name').innerText = user.username + '#' + user.discriminator;
+            document.getElementById('user-email').innerText = user.email;
+            document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+
+            // Récupérer et afficher l'historique des actions
+            const historiqueList = document.querySelector('.historique-list');
+            if (user.history && user.history.length > 0) {
+              user.history.forEach(action => {
+                const actionCard = document.createElement('div');
+                actionCard.classList.add('action-card');
+                actionCard.innerHTML = `
+                  <h4>${action.title}</h4>
+                  <p><strong>Action:</strong> ${action.description}</p>
+                  <p><strong>Date:</strong> ${new Date(action.timestamp).toLocaleString()}</p>
+                `;
+                historiqueList.appendChild(actionCard);
+              });
+            } else {
+              historiqueList.innerHTML = '<p>Aucune action dans l\'historique pour l\'instant.</p>';
+            }
+          }
+        })
+        .catch(err => {
+          console.error('Erreur de récupération des données utilisateur:', err);
+        });
+
+      // Gestion de la déconnexion
+      document.getElementById('logout').addEventListener('click', function() {
+        fetch('/api/logout', { method: 'POST' })
+          .then(() => {
+            alert('Déconnexion réussie');
+            window.location.href = '/index.html';
+          })
+          .catch(err => {
+            console.error('Erreur lors de la déconnexion:', err);
+          });
+      });
+    });
+  </script>
+</body>
+</html>

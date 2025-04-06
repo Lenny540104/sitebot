@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Panel - SX Bot</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="panel.css" /> <!-- Assurez-vous de bien avoir ce fichier pour le panel -->
+</head>
+<body>
+  <div class="sidebar">
+    <div class="logo">
+      <h2>SX Bot</h2>
+    </div>
+    <nav>
+      <a href="./panel.html" class="active">Mon Profil</a>
+      <a href="./my_bots.html">Mes Bots</a>
+      <a href="./historique.html">Historique</a>
+      <a href="./support.html">Support</a>
+      <a href="admin.html" id="adminButton" style="display: none;">Admin</a> <!-- Le bouton admin est caché par défaut -->
+      <a href="#" id="logout">Déconnexion</a>
+    </nav>
+  </div>
+
+  <div class="main-content">
+    <header>
+      <div class="user-info">
+        <img id="user-avatar" src="" alt="Avatar" class="avatar">
+        <h3 id="user-name">Nom Utilisateur</h3>
+        <p id="user-email">Email</p>
+      </div>
+      <div class="stats">
+        <div class="card">
+          <h4>Bot Commandé</h4>
+          <p id="user-bots">0</p>
+        </div>
+        <div class="card">
+          <h4>Status</h4>
+          <p id="user-status">Connecté</p>
+        </div>
+      </div>
+    </header>
+
+
+    <section class="user-bots">
+      <h3>Mes Bots</h3>
+      <div class="bots-list">
+        <!-- Dynamically generated bot cards will appear here -->
+      </div>
+    </section>
+  </div>
+
+  <script>
+    // Assurez-vous que l'utilisateur est bien connecté via Discord avant d'afficher les données
+    window.addEventListener('DOMContentLoaded', function() {
+      // Remplacer cette URL par celle de ton API pour récupérer les infos utilisateur
+      fetch('/api/me')  // L'API qui te renverra les infos de l'utilisateur connecté
+        .then(res => res.json())
+        .then(user => {
+          if (user.error) {
+            // Si l'utilisateur n'est pas connecté, afficher une alerte ou rediriger vers la page de connexion
+            alert('Veuillez vous connecter d\'abord');
+            window.location.href = '/login.html';  // Ou la page de connexion de ton choix
+          } else {
+            // Affichage des infos utilisateur
+            document.getElementById('user-name').innerText = user.username + '#' + user.discriminator;
+            document.getElementById('user-email').innerText = user.email;
+            document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+            document.getElementById('user-bots').innerText = user.bots.length; // Nombre de bots achetés
+            document.getElementById('user-status').innerText = 'Connecté';
+
+            // Ajout des bots achetés
+            const botsList = document.querySelector('.bots-list');
+            if (user.bots && user.bots.length > 0) {
+              user.bots.forEach(bot => {
+                const botCard = document.createElement('div');
+                botCard.classList.add('bot-card');
+                botCard.innerHTML = `
+                  <h4>${bot.name}</h4>
+                  <p>Status: ${bot.status}</p>
+                `;
+                botsList.appendChild(botCard);
+              });
+            } else {
+              botsList.innerHTML = '<p>Aucun bot acheté pour l’instant.</p>';
+            }
+          }
+        })
+        .catch(err => {
+          console.error('Erreur de récupération des infos utilisateur:', err);
+        });
+      
+      // Gestion de la déconnexion
+      document.getElementById('logout').addEventListener('click', function() {
+        // Ici tu peux appeler l'API pour déconnecter l'utilisateur
+        fetch('/api/logout', { method: 'POST' })
+          .then(() => {
+            alert('Déconnexion réussie');
+            window.location.href = '/index.html';  // Redirection vers la page de connexion
+          })
+          .catch(err => {
+            console.error('Erreur lors de la déconnexion:', err);
+          });
+      });
+    });
+
+
+    fetch('/api/me')
+  .then(res => res.json())
+  .then(user => {
+    document.getElementById('user-name').innerText = user.username + '#' + user.discriminator;
+    document.getElementById('user-email').innerText = user.email;
+    document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+
+    // Afficher lien admin si admin
+    if (user.isAdmin) {
+      document.getElementById('admin-link').style.display = 'block';
+    }
+  })
+
+  // Lorsque la page est chargée, vérifier si l'utilisateur est un admin
+  window.addEventListener('DOMContentLoaded', function () {
+    fetch('/api/me')
+      .then(res => res.json())
+      .then(user => {
+        const adminButton = document.getElementById('adminButton');
+        
+        // Vérifie si l'utilisateur est un admin (ici je prends un ID Discord spécifique)
+        if (user.id === "857699987168296990") { // Remplace TON_ID_DISCORD par ton vrai ID Discord
+          adminButton.style.display = "inline"; // Affiche le bouton admin
+        }
+
+        document.getElementById('user-name').innerText = user.username + '#' + user.discriminator;
+        document.getElementById('user-email').innerText = user.email;
+        document.getElementById('user-avatar').src = `https://cdn.discordapp.com/avatars/${user.id}/${user.avatar}.png`;
+      })
+      .catch(err => {
+        console.error('Erreur de récupération des données utilisateur:', err);
+      });
+  });
+
+
+  </script>
+</body>
+</html>
+
+
+
+
+

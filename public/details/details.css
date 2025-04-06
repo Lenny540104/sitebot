@@ -1,0 +1,308 @@
+:root {
+    --bg-color: #0f0f1b;
+    --card-bg: #1a1a2e;
+    --accent: #5865f2;
+    --accent-light: #7289da;
+    --text-color: #f0f0f0;
+    --text-muted: #bbbbbb;
+    --glass: rgba(255, 255, 255, 0.05);
+  }
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    line-height: 1.6;
+  }
+  
+  .container {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  
+  header {
+    background-color: var(--card-bg);
+    padding: 1rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.4);
+  }
+  
+  header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  header h1 {
+    font-size: 1.8rem;
+    color: var(--accent);
+  }
+  
+  nav a {
+    color: var(--text-muted);
+    text-decoration: none;
+    margin-left: 1rem;
+    transition: color 0.3s;
+  }
+  
+  nav a:hover {
+    color: var(--accent);
+  }
+  
+  .hero {
+    background: linear-gradient(145deg, #1f1f2f, #131322);
+    padding: 4rem 0;
+    text-align: center;
+  }
+  
+  .hero h2 {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    color: var(--accent-light);
+  }
+  
+  .hero p {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+  }
+  
+  h3 {
+    font-size: 2.5rem;
+    margin-bottom: 2rem;
+    text-align: center;
+    color: var(--accent-light);
+  }
+  
+  section {
+    padding: 3rem 0;
+  }
+  
+  .card {
+    background-color: var(--card-bg);
+    border-radius: 1rem;
+    padding: 2rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.4);
+    margin-bottom: 2rem;
+  }
+  
+  .card h4 {
+    color: var(--accent);
+    margin-bottom: 1rem;
+    font-size: 2rem;
+  }
+  
+  .card p {
+    color: var(--text-muted);
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+  }
+  
+  .card ul {
+    color: var(--text-muted);
+    margin: 1rem 0;
+  }
+  
+  .card a {
+    color: var(--accent);
+    text-decoration: none;
+    font-size: 1rem;
+    border: 1px solid var(--accent);
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .card a:hover {
+    background-color: var(--accent);
+    color: var(--text-color);
+  }
+  
+  /* Modal window (for more details on each bot) */
+  .modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 999;
+    display: none;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .modal-content {
+    background: var(--card-bg);
+    padding: 2rem;
+    border-radius: 1rem;
+    max-width: 800px;
+    width: 100%;
+    color: var(--text-color);
+  }
+  
+  .modal-header {
+    font-size: 2rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  
+  .modal-body {
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .modal-footer {
+    text-align: right;
+  }
+  
+  .close {
+    cursor: pointer;
+    background-color: var(--accent);
+    color: var(--text-color);
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 5px;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+  }
+  
+  .close:hover {
+    background-color: var(--accent-light);
+  }
+  
+  footer {
+    background-color: #0b0b14;
+    padding: 1rem 0;
+    text-align: center;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+  }
+  
+  /* Specific to bot detail pages */
+  .bot-detail-header {
+    font-size: 3rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+    text-align: center;
+  }
+  
+  .bot-detail-description {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .bot-feature-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 2rem;
+    justify-content: center;
+  }
+  
+  .bot-feature {
+    background-color: var(--card-bg);
+    padding: 1.5rem;
+    border-radius: 1rem;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+    width: 300px;
+    text-align: center;
+  }
+  
+  .bot-feature h5 {
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  
+  .bot-feature p {
+    font-size: 1rem;
+    color: var(--text-muted);
+  }
+  
+  .bot-detail-footer {
+    margin-top: 3rem;
+    text-align: center;
+  }
+  
+  .buy-now-btn {
+    background-color: var(--accent);
+    color: var(--text-color);
+    border: none;
+    padding: 1rem 2rem;
+    font-size: 1.2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .buy-now-btn:hover {
+    background-color: var(--accent-light);
+  }
+
+  /* Section des tarifs - détails */
+#price {
+    background-color: var(--bg-color);
+    padding: 3rem 0;
+  }
+  
+  #price h3 {
+    font-size: 2rem;
+    text-align: center;
+    color: var(--accent-light);
+    margin-bottom: 1.5rem;
+  }
+  
+  .pricing-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+  }
+  
+  .pricing-cards .card {
+    background-color: var(--card-bg);
+    border-radius: 1rem;
+    padding: 2rem;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s;
+  }
+  
+  .pricing-cards .card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .pricing-cards .card h4 {
+    font-size: 1.5rem;
+    color: var(--accent);
+    margin-bottom: 1rem;
+  }
+  
+  .pricing-cards .card p {
+    color: var(--text-muted);
+    margin-bottom: 1.5rem;
+  }
+  
+  .pricing-cards .cta-button {
+    background-color: var(--accent);
+    color: var(--text-color);
+    padding: 0.8rem 2rem;
+    border-radius: 30px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    display: inline-block;
+    transition: background-color 0.3s;
+  }
+  
+  .pricing-cards .cta-button:hover {
+    background-color: #4040f0;
+  }
+  
+  
+  
